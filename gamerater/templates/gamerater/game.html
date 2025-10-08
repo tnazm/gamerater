@@ -1,0 +1,63 @@
+{% extends 'gamerater/layout.html' %}
+
+{% block body %}
+    <div class=container>
+        <div class="row">
+            <div class="img-container col-lg game-img-con">
+                <img class="game-img" src={{ instance.cover }}>
+            </div>
+            <div class="game-info col-lg">
+                <h2>{{ instance.name }}</h2>
+                {% if instance.first_release_date %}
+                    <p>Released: {{ instance.first_release_date }}</p>
+                {% else %}
+                    <p>Not released yet.</p>
+                {% endif %}
+                <p>Genres: {{ instance.genres }}</p>
+                {% if instance.aggregated_rating %}
+                <p>Rated: {{ instance.aggregated_rating|floatformat }}/100</p>
+                {% endif %}
+                {% if instance.developer %}
+                <p>Developed by: {{ instance.developer }}</p>
+                {% endif %}
+           </div>
+
+            <div class="col-lg">
+                <div class="result">
+                    {% include "gamerater/add_list_form.html" with instance=instance %}
+                </div>
+            </div>
+        </div>
+
+        {% if user.is_authenticated %}
+            <div class="row result">
+                <h2>Your Journal Entry</h2>
+                <p id="text">{{ rel.journal_entry  }}
+                </p>
+                <a href="#" id="editButton">Edit</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script type="text/babel">
+        var button = document.getElementById('editButton')
+        button.addEventListener('click', () =>{
+            let textElement = document.getElementById('text');
+            let text = textElement.textContent;
+            console.log(text)
+            textElement.innerHTML = `<textarea id="edited" rows=4 cols=100%>${text}</textarea><br><button class="btn btn-primary" id="submit" type="submit">Post</button>`;
+            let submitJournal = document.getElementById('submit');
+            submitJournal.addEventListener('click', () => {
+                let newTextElement = document.getElementById('edited')
+                let newText = newTextElement.value;
+                fetch('/game_db/{{ instance.id }}', {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        journal: newText
+                    })
+                }) 
+                textElement.innerHTML = `${newText}`;
+            })
+        })
+    </script>
+{% endblock %}

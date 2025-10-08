@@ -1,0 +1,113 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}GameJourneys{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <link href="{% static 'gamerater/styles.css' %}" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'gamerater:index' %}">GameJourneys</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRest" aria-controls="navbarRest" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarRest">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'gamerater:users_dir' %}">Users</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle active" href="#" id="navbarLists" role="button" data-bs-toggle="dropdown" aria-expanded="false">My Lists</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarLists">
+                                    <li><a class="dropdown-item" href="{% url 'gamerater:game_list' user.username 'backlog' %}">Backlog</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'gamerater:game_list' user.username 'playing' %}">Currently Playing</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'gamerater:game_list' user.username 'completed' %}">Completed</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'gamerater:users' user.username %}">{{ user.username }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'gamerater:logout' %}">Log Out</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'gamerater:login' %}">Log In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'gamerater:register' %}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <form class="d-flex" action="{% url 'gamerater:search' %}" method="get">
+                        <input type="text" name="query" placeholder="Search games">
+                        <input class="btn btn-outline-light btn-sm" type="submit" value="Search">
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <script type="text/babel">
+            class GameListForm extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {listStatus: ""};
+                }
+
+                updateGameList() {
+                    var listAdd = document.getElementById(`sel-${this.props.id}`).value;
+                    fetch(`/game_db/${this.props.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                        "list-add": listAdd
+                        })
+                    })
+                    .then(code => {
+                        this.setState({"listStatus": listAdd});
+                    })
+                }
+
+                componentDidMount() {
+                    var listAdd;
+                    fetch(`/game_db/${this.props.id}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        listAdd = data.list;
+                        this.setState({"listStatus": listAdd});
+                })}
+
+                render() {
+                    return (
+                        <div>
+                            <p>In list: {this.state.listStatus} <span id={`list-${this.props.id}`}></span></p>
+                            <p>Add this game to list:</p>
+                            <select name="list-add" id={`sel-${this.props.id}`}>
+                                <option value="none">None</option>
+                                <option value="backlog">Backlog</option>
+                                <option value="playing">Currently Playing</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <button onClick={this.updateGameList.bind(this)} class="btn btn-primary">Change list</button>
+                        </div>
+                    )
+                }
+            }
+        </script>
+
+        <div id="extended">
+            {% block body %}
+            {% endblock %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    </body>
+</html>

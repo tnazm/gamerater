@@ -1,0 +1,39 @@
+{% extends 'gamerater/layout.html' %}
+
+{% block body %}
+    <h1> {{ viewing_user.username }} </h1>
+
+    <h3><a href="{% url "gamerater:game_list" viewing_user.username "backlog" %}">Backlog:</a></h3>
+    <div class="user-game-list">
+        {% if backlog|length > 0 %}
+            {% for rel in backlog %}
+                {% include "gamerater/game_item_jrnl.html" with rel=rel %}
+            {% endfor %}
+        {% else %}
+            {{ viewing_user.username }} hasn't added any games to their Currently Playing list.
+        {% endif %}
+    </div>
+
+    <h3><a href="{% url "gamerater:game_list" viewing_user.username "playing" %}">Playing:</a></h3>
+    <div class="user-game-list">
+        {% if playing.count > 0 %}
+            {% for rel in playing %}
+                {% include "gamerater/game_item_jrnl.html" with rel=rel %}
+            {% endfor %}
+        {% else %}
+            {{ viewing_user.username }} hasn't added any games to their Currently Playing list.
+        {% endif %}
+    </div>
+
+    <h3><a href="{% url "gamerater:game_list" viewing_user.username "completed" %}">Completed:</a></h3>
+    <div class="user-game-list">
+        {% if completed.count > 0 %}
+            {% for rel in completed %}
+                {% include "gamerater/game_item_jrnl.html" with rel=rel %}
+            {% endfor %}
+        {% else %}
+            {{ viewing_user.username }} hasn't added any games to their Currently Playing list.
+        {% endif %}
+    </div>
+
+{% endblock %}

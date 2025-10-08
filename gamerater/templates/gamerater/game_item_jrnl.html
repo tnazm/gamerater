@@ -1,0 +1,24 @@
+<div class="result">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-sm-auto">
+                <img src="{{ rel.game.cover }}" class="result-img">
+            </div>
+            <div class="col">
+                <div class="result-text">
+                    <a href="{% url 'gamerater:game' rel.game.id  %}"><h2>{{ rel.game.name }}</h2></a>
+                    ({{ rel.game.first_release_date }})<br>
+                    {% include "gamerater/add_list_form.html" with instance=rel.game %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="result-text">
+                {% if rel.journal_entry %}
+                    <b>{{ rel.user.username }}'s journal entry:</b><br>
+                    {{ rel.journal_entry }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

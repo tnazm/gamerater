@@ -1,0 +1,28 @@
+{% extends "gamerater/layout.html" %}
+
+{% block body %}
+    <p>To get started, click on or search for a game you've played or are interested in playing.</p>
+
+    <p>You can add it to your backlog of uncompleted games, a list of games you've finished, or a list of games you are currently playing through.</p>
+
+    <p>You can also journal about the game, writing your thoughts while playing it or reviewing it in depth.</p>
+
+    <p>Your reviews are public, so you can share your user page with others and read their journals as well.</p> <br>
+
+    <h2>Randomized Top Hits:</h2>
+
+    <div class="results">
+        {% for result in results %}
+            <div class="result">
+                <div class="img-container res-img-con">
+                    <img src="{{ result.cover_url }}" class="result-img">
+                </div>
+                <div class="result-text">
+                    <a href="{% url 'gamerater:game' result.id  %}"><h2>{{ result.name }}</h2></a>
+                    ({{ result.reldate }})<br>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

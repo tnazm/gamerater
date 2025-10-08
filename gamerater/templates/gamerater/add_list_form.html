@@ -1,0 +1,6 @@
+{% if user.is_authenticated  %}
+    <div id="{{ instance.id }}"></div>
+    <script type="text/babel">
+        ReactDOM.render(<GameListForm id="{{ instance.id }}" />, document.getElementById({{ instance.id  }}))
+    </script>
+{% endif %}

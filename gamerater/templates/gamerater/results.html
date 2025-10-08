@@ -1,0 +1,23 @@
+{% extends "gamerater/layout.html" %}
+
+{% block body %}
+    <div class="results">
+        {% for result in results %}
+            <div class="result">
+                <div class="img-container res-img-con">
+                    <img src="{{ result.cover_url }}" class="result-img">
+                </div>
+                <div class="result-text">
+                    <a href="{% url 'gamerater:game' result.id  %}"><h2>{{ result.name }}</h2></a>
+                    ({{ result.reldate }})<br>
+                </div>
+            </div>
+        {% endfor %}
+        <nav class="center">
+            <ul class="pagination">
+                <li><a class="page-link" href="?query={{ query }}&page={{ prev }}">Previous</a></li>
+                <li><a class="page-link" href="?query={{ query}}&page={{ next }}">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+{% endblock %}

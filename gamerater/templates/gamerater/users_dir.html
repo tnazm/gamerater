@@ -1,0 +1,17 @@
+{% extends "gamerater/layout.html" %}
+
+{% block body %}
+    <h2>List of users</h2>
+    <div class="results">
+        {% for user in users %}
+            <div class="result">
+                <a href="{% url 'gamerater:users' user.name %}">{{ user.name }}</a>
+                <ul>
+                    <li>Backlog: {{ user.backlog_count }}</li>
+                    <li>Playing: {{ user.playing_count }}</li>
+                    <li>Completed: {{ user.completed_count }}</li>
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

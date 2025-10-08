@@ -1,0 +1,10 @@
+<div class="result">
+    <div class="img-container">
+        <img src="{{ game.cover }}" class="result-img">
+    </div>
+    <div class="result-text">
+        <a href="{% url 'gamerater:game' game.id  %}"><h2>{{ game.name }}</h2></a>
+        ({{ game.first_release_date }})<br>
+        {% include "gamerater/add_list_form.html" with instance=game %}
+    </div>
+</div>
